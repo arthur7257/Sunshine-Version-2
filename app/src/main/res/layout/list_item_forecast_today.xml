@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/txt_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Today, 24 Jun"
+            android:maxLines="1"/>
+
+        <TextView
+            android:id="@+id/txt_max"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="21˚"
+            android:maxLength="5"/>
+
+        <TextView
+            android:id="@+id/txt_min"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="9˚"
+            android:maxLength="5"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/txt_weather_desc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Clear"
+        android:maxLines="1"
+        android:gravity="center"
+        android:drawableTop="@drawable/ic_launcher"
+        android:padding="16dp"/>
+
+</LinearLayout>

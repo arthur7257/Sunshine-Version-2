@@ -27,7 +27,9 @@ import android.view.MenuItem;
 
 public class MainActivity extends ActionBarActivity {
 
-    private final String LOG_TAG = MainActivity.class.getSimpleName();
+    private static final String FORECAST_FRAG_TAG = ForecastFragment.class.getSimpleName();
+    private static final String LOG_TAG = MainActivity.class.getSimpleName();
+    private String mLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,9 +37,26 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new ForecastFragment())
+                    .add(R.id.container, new ForecastFragment(), FORECAST_FRAG_TAG)
                     .commit();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SharedPreferences sharedPrefs =
+                PreferenceManager.getDefaultSharedPreferences(this);
+        String storedLocation = sharedPrefs.getString(
+                getString(R.string.pref_location_key),
+                getString(R.string.pref_location_default));
+        if (storedLocation.equals(mLocation)) {
+            return;
+        }
+        mLocation = storedLocation;
+        ForecastFragment forecastFragment = (ForecastFragment) getSupportFragmentManager()
+                        .findFragmentByTag(FORECAST_FRAG_TAG);
+        forecastFragment.onLocationChanged();
     }
 
     @Override
@@ -68,17 +87,11 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void openPreferredLocationInMap() {
-        SharedPreferences sharedPrefs =
-                PreferenceManager.getDefaultSharedPreferences(this);
-        String location = sharedPrefs.getString(
-                getString(R.string.pref_location_key),
-                getString(R.string.pref_location_default));
-
         // Using the URI scheme for showing a location found on a map.  This super-handy
         // intent can is detailed in the "Common Intents" page of Android's developer site:
         // http://developer.android.com/guide/components/intents-common.html#Maps
         Uri geoLocation = Uri.parse("geo:0,0?").buildUpon()
-                .appendQueryParameter("q", location)
+                .appendQueryParameter("q", mLocation)
                 .build();
 
         Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -87,7 +100,7 @@ public class MainActivity extends ActionBarActivity {
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
         } else {
-            Log.d(LOG_TAG, "Couldn't call " + location + ", no receiving apps installed!");
+            Log.d(LOG_TAG, "Couldn't call " + mLocation + ", no receiving apps installed!");
         }
     }
 }
