@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="WindView">
+        <attr name="speed" format="float" />
+        <attr name="degrees" format="integer" />
+        <attr name="direction" format="enum">
+            <enum name="N" value="90" />
+            <enum name="S" value="270" />
+            <enum name="E" value="180" />
+            <enum name="W" value="0" />
+            <enum name="NE" value="135" />
+            <enum name="NW" value="45" />
+            <enum name="SE" value="225" />
+            <enum name="SW" value="315" />
+        </attr>
+        <attr name="speedColor" format="color" />
+        <attr name="fontFamily" format="string" />
+    </declare-styleable>
+</resources>

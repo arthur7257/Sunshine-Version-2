@@ -17,38 +17,50 @@
             android:id="@+id/txt_date_desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            style="@style/TextBodyLarge"
+            android:textSize="24sp"
             tools:text="Today" />
 
         <TextView
             android:id="@+id/txt_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            style="@style/TextBodySmall"
+            android:textSize="16sp"
+            android:textColor="@color/grey_subtitle"
             tools:text="Jun 24" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:padding="16sp">
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:gravity="center_horizontal">
 
                 <TextView
                     android:id="@+id/txt_max"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLength="5"
+                    android:textSize="96sp"
+                    android:fontFamily="sans-serif-light"
+                    android:textColor="@android:color/black"
                     tools:text="21˚" />
 
                 <TextView
                     android:id="@+id/txt_min"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLength="5"
+                    android:textSize="48sp"
+                    android:textColor="@android:color/black"
                     tools:text="9˚" />
 
             </LinearLayout>
@@ -58,10 +70,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:drawableTop="@drawable/ic_launcher"
                 android:gravity="center"
                 android:maxLines="1"
-                android:padding="16dp"
+                style="@style/TextBodyLarge"
                 android:text="Clear" />
 
         </LinearLayout>
@@ -70,18 +81,23 @@
             android:id="@+id/txt_humidity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            style="@style/TextBodyLarge"
             tools:text="Humidity: 84%" />
 
         <TextView
             android:id="@+id/txt_wind"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            style="@style/TextBodyLarge"
+            android:layout_marginTop="4dp"
             tools:text="Wind: 6 km/h" />
 
         <TextView
             android:id="@+id/txt_pressure"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            style="@style/TextBodyLarge"
+            android:layout_marginTop="4dp"
             tools:text="Pressure: 45 hpa" />
 
     </LinearLayout>

@@ -1,0 +1,111 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:windview="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".DetailFragment">
+
+    <LinearLayout
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txt_date_desc"
+            style="@style/TextBodyLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            tools:text="Today"/>
+
+        <TextView
+            android:id="@+id/txt_date"
+            style="@style/TextBodySmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/grey_subtitle"
+            android:textSize="20sp"
+            tools:text="Jun 24"/>
+
+    </LinearLayout>
+
+
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txt_max"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-light"
+                android:maxLength="5"
+                android:textColor="@android:color/black"
+                android:textSize="96sp"
+                tools:text="21˚"/>
+
+            <TextView
+                android:id="@+id/txt_min"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-light"
+                android:maxLength="5"
+                android:textColor="@color/grey_subtitle"
+                android:textSize="48sp"
+                tools:text="9˚"/>
+
+            <TextView
+                android:id="@+id/txt_humidity"
+                style="@style/TextBodyLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Humidity: 84%"/>
+
+            <TextView
+                android:id="@+id/txt_wind"
+                style="@style/TextBodyLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Wind: 6 km/h"/>
+
+            <TextView
+                android:id="@+id/txt_pressure"
+                style="@style/TextBodyLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Pressure: 45 hpa"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/txt_weather_desc"
+            style="@style/TextBodyLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:maxLines="1"
+            android:textColor="@color/grey_subtitle"
+            tools:text="Clear"/>
+
+
+    </LinearLayout>
+
+</LinearLayout>
+

@@ -15,6 +15,9 @@
  */
 package com.example.android.sunshine.app;
 
+import android.annotation.TargetApi;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -40,8 +43,9 @@ public class SettingsActivity extends PreferenceActivity
 
         // For all preferences, attach an OnPreferenceChangeListener so the UI summary can be
         // updated when the preference changes.
-        bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_location_key)));
-        bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_units_key)));
+        bindStringPreferenceToValue(findPreference(getString(R.string.pref_location_key)));
+        bindStringPreferenceToValue(findPreference(getString(R.string.pref_units_key)));
+        bindBooleanPreferenceToValue(findPreference(getString(R.string.pref_display_notif_key)));
     }
 
     /**
@@ -49,16 +53,27 @@ public class SettingsActivity extends PreferenceActivity
      * Also fires the listener once, to initialize the summary (so it shows up before the value
      * is changed.)
      */
-    private void bindPreferenceSummaryToValue(Preference preference) {
+    private void bindStringPreferenceToValue(Preference preference) {
+        bindPreferenceToValue(preference,
+                              PreferenceManager
+                                      .getDefaultSharedPreferences(preference.getContext())
+                                      .getString(preference.getKey(), ""));
+    }
+
+    private void bindBooleanPreferenceToValue(Preference preference) {
+        bindPreferenceToValue(preference,
+                              PreferenceManager
+                                      .getDefaultSharedPreferences(preference.getContext())
+                                      .getBoolean(preference.getKey(), true));
+    }
+
+    private void bindPreferenceToValue(Preference preference, Object value) {
         // Set the listener to watch for value changes.
         preference.setOnPreferenceChangeListener(this);
 
         // Trigger the listener immediately with the preference's
         // current value.
-        onPreferenceChange(preference,
-                PreferenceManager
-                        .getDefaultSharedPreferences(preference.getContext())
-                        .getString(preference.getKey(), ""));
+        onPreferenceChange(preference, value);
     }
 
     @Override
@@ -80,4 +95,9 @@ public class SettingsActivity extends PreferenceActivity
         return true;
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    @Override
+    public Intent getParentActivityIntent() {
+        return super.getParentActivityIntent().addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    }
 }

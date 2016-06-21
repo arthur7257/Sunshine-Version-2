@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="TextBodyLarge" parent="TextAppearance.AppCompat.Large">
+        <item name="android:fontFamily">sans-serif-condensed</item>
+    </style>
+
+    <style name="TextBodySmall" parent="TextAppearance.AppCompat.Small">
+        <item name="android:fontFamily">sans-serif-condensed</item>
+    </style>
+
+
+</resources>

@@ -35,8 +35,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             WeatherContract.WeatherEntry.COLUMN_HUMIDITY,
             WeatherContract.WeatherEntry.COLUMN_WIND_SPEED,
             WeatherContract.WeatherEntry.COLUMN_DEGREES,
-            WeatherContract.WeatherEntry.COLUMN_PRESSURE
-
+            WeatherContract.WeatherEntry.COLUMN_PRESSURE,
+            WeatherContract.WeatherEntry.COLUMN_WEATHER_ID
             };
 
     private static final int COL_DATE = 0;
@@ -47,12 +47,14 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private static final int COL_WIND_SPEED = 5;
     private static final int COL_WIND_DEGREES = 6;
     private static final int COL_PRESSURE = 7;
-
+    private static final int COL_WEATHER_CONDITION_ID = 8;
 
     private static final int DETAIL_LOADER_ID = 0;
     private static final String LOG_TAG = DetailFragment.class.getSimpleName();
 
+    private static final String DATE_KEY = "DATE_KEY";
     private static final String FORECAST_SHARE_HASHTAG = " #SunshineApp";
+
     private TextView mTxtDateDesc;
     private TextView mTxtDate;
     private TextView mTxtMax;
@@ -61,15 +63,32 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private TextView mTxtHumidity;
     private TextView mTxtWind;
     private TextView mTxtPressure;
+    private Uri mDataUri;
 
     public DetailFragment() {
         setHasOptionsMenu(true);
     }
 
+    public static DetailFragment newInstance(long date) {
+        Bundle args = new Bundle();
+        args.putLong(DATE_KEY, date);
+        DetailFragment fragment = new DetailFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle args = getArguments();
+        if (args != null) {
+            setUpDataUri(args.getLong(DATE_KEY));
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
         mTxtDateDesc = ((TextView) rootView.findViewById(R.id.txt_date_desc));
         mTxtDate = ((TextView) rootView.findViewById(R.id.txt_date));
@@ -120,7 +139,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new CursorLoader(getActivity(),
-                                getActivity().getIntent().getData(),
+                                mDataUri,
                                 DETAIL_COLUMNS,
                                 null,
                                 null,
@@ -136,6 +155,11 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         mTxtDateDesc.setText(Utility.getDayName(getActivity(), date));
         mTxtDate.setText(Utility.getFormattedMonthDay(getActivity(), date));
         mTxtDesc.setText(data.getString(COL_DESC));
+        String conditionId = data.getString(COL_WEATHER_CONDITION_ID);
+        mTxtDesc.setCompoundDrawablesWithIntrinsicBounds(0,
+                                                         Utility.getArtWeatherCondition(conditionId),
+                                                         0,
+                                                         0);
         boolean isMetric = Utility.isMetric(getActivity());
         mTxtMax.setText(Utility.formatTemperature(getActivity(),
                                                   data.getDouble(COL_MAX),
@@ -151,9 +175,20 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
                                             isMetric));
         double pressure = data.getDouble(COL_PRESSURE);
         mTxtPressure.setText(getActivity().getString(R.string.format_pressure, pressure));
+
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+    }
+
+    private void setUpDataUri(long date) {
+        String location = Utility.getPreferredLocation(getActivity());
+        mDataUri = WeatherContract.WeatherEntry.buildWeatherLocationWithDate(location, date);
+    }
+
+    public void onLocationChanged() {
+        setUpDataUri(WeatherContract.WeatherEntry.getDateFromUri(mDataUri));
+        getLoaderManager().restartLoader(DETAIL_LOADER_ID, null, this);
     }
 }

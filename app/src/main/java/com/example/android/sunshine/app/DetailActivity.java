@@ -24,13 +24,17 @@ import android.view.MenuItem;
 
 public class DetailActivity extends ActionBarActivity {
 
+    public static final String DATE_KEY = "DATE_KEY";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         if (savedInstanceState == null) {
+            long date = getIntent().getLongExtra(DATE_KEY, 0L);
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new DetailFragment())
+                    .add(R.id.detail_pane,
+                         DetailFragment.newInstance(date))
                     .commit();
         }
     }

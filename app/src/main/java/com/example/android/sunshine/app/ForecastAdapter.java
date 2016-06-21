@@ -2,13 +2,18 @@ package com.example.android.sunshine.app;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.support.annotation.DrawableRes;
 import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.android.sunshine.app.data.WeatherContract;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * {@link ForecastAdapter} exposes a list of weather forecasts
@@ -50,8 +55,14 @@ public class ForecastAdapter extends CursorAdapter {
     private static final int VIEW_TYPE_DAY = 1;
     private static final int VIEW_TYPE_COUNT = 2;
 
+    private boolean mUseTodayLayout = true;
+
     public ForecastAdapter(Context context, Cursor c, int flags) {
         super(context, c, flags);
+    }
+
+    public void setUseTodayLayout(boolean useTodayLayout) {
+        mUseTodayLayout = useTodayLayout;
     }
 
     @Override
@@ -61,7 +72,7 @@ public class ForecastAdapter extends CursorAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        return position == 0 ? VIEW_TYPE_TODAY : VIEW_TYPE_DAY;
+        return position == 0 && mUseTodayLayout ? VIEW_TYPE_TODAY : VIEW_TYPE_DAY;
     }
 
     /*
@@ -70,7 +81,7 @@ public class ForecastAdapter extends CursorAdapter {
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         int layoutRes;
-        switch (cursor.getPosition()) {
+        switch (getItemViewType(cursor.getPosition())) {
             case VIEW_TYPE_TODAY:
                 layoutRes = R.layout.list_item_forecast_today;
                 break;
@@ -101,6 +112,22 @@ public class ForecastAdapter extends CursorAdapter {
         holder.txtMin.setText(Utility.formatTemperature(context,
                                                         cursor.getDouble(COL_WEATHER_MIN_TEMP),
                                                         isMetric));
+
+        holder.imgIcon.setImageResource(getWeatherIcon(getItemViewType(cursor.getPosition()),
+                                                       cursor.getString(COL_WEATHER_CONDITION_ID)));
+    }
+
+    private int getWeatherIcon(int viewType, String conditionId) {
+        int res = -1;
+        switch (viewType) {
+            case VIEW_TYPE_TODAY:
+                res = Utility.getArtWeatherCondition(conditionId);
+                break;
+            case VIEW_TYPE_DAY:
+                res = Utility.getIconWeatherCondition(conditionId);
+                break;
+        }
+        return res;
     }
 
     private static class ViewHolder {
@@ -108,12 +135,14 @@ public class ForecastAdapter extends CursorAdapter {
         TextView txtDesc;
         TextView txtMax;
         TextView txtMin;
+        ImageView imgIcon;
 
         ViewHolder(View view) {
             txtDate = (TextView) view.findViewById(R.id.txt_date);
             txtDesc = (TextView) view.findViewById(R.id.txt_weather_desc);
             txtMax = (TextView) view.findViewById(R.id.txt_max);
             txtMin = (TextView) view.findViewById(R.id.txt_min);
+            imgIcon = ((ImageView) view.findViewById(R.id.img_weather));
         }
     }
 }

@@ -128,7 +128,12 @@ public class Utility {
                     .equals(context.getString(R.string.pref_units_metric));
     }
 
-    static String formatTemperature(Context context, double temperature, boolean isMetric) {
+    public static boolean isDisplayNotificationsActivated(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean(context.getString(R.string.pref_display_notif_key), true);
+    }
+
+    public static String formatTemperature(Context context, double temperature, boolean isMetric) {
         double temp;
         if ( !isMetric ) {
             temp = 9*temperature/5+32;
@@ -149,7 +154,69 @@ public class Utility {
         final int DIR_TOTAL = 8;
 
         String direction = directionsText[Math.round(degrees / (DEGREES_TOTAL / DIR_TOTAL)) % DIR_TOTAL];
-        int res = isMetric ? R.string.format_wind_kmh : R.string.format_wind_mph;
+        int res;
+        if (isMetric) {
+            res = R.string.format_wind_kmh;
+        } else {
+            res = R.string.format_wind_mph;
+            windSpeed = getImperialWindSpeed(windSpeed);
+        }
         return context.getString(res, windSpeed, direction);
+    }
+
+    public static float getImperialWindSpeed(float metricWindSpeed) {
+        return .621371192237334f * metricWindSpeed;
+    }
+
+    private static final String[] CONDITION_ID_REGEX = {"^2[0-9]+$",
+                                                        "^3[0-9]+$",
+                                                        "^5[0-9]+$",
+                                                        "^6[0-9]+$",
+                                                        "^7[0-6]+$",
+                                                        "^7[7-9]+$",
+                                                        "^800$",
+                                                        "^80[0-9]+$",
+                                                        "^90[0-9]+$"};
+
+    private static final int[] ART_ARRAY = {R.drawable.art_storm,
+                                            R.drawable.art_light_rain,
+                                            R.drawable.art_rain,
+                                            R.drawable.art_snow,
+                                            R.drawable.art_fog,
+                                            R.drawable.art_storm,
+                                            R.drawable.art_clear,
+                                            R.drawable.art_light_clouds,
+                                            R.drawable.art_clouds};
+
+    private static final int[] ICON_ARRAY = {R.drawable.ic_storm,
+                                             R.drawable.ic_light_rain,
+                                             R.drawable.ic_rain,
+                                             R.drawable.ic_snow,
+                                             R.drawable.ic_fog,
+                                             R.drawable.ic_storm,
+                                             R.drawable.ic_clear,
+                                             R.drawable.ic_light_clouds,
+                                             R.drawable.ic_cloudy};
+
+    private static final int RES_TYPE_ART = 0;
+    private static final int RES_TYPE_ICON = 1;
+
+    private static int getDrawableWeatherCondition(int resType, String conditionId) {
+        int res = -1;
+        for (int i = 0; i < CONDITION_ID_REGEX.length; i++) {
+            if (conditionId.matches(CONDITION_ID_REGEX[i])) {
+                res = resType == RES_TYPE_ART ? ART_ARRAY[i] : ICON_ARRAY[i];
+                break;
+            }
+        }
+        return res;
+    }
+
+    public static int getArtWeatherCondition(String conditionId) {
+        return getDrawableWeatherCondition(RES_TYPE_ART, conditionId);
+    }
+
+    public static int getIconWeatherCondition(String conditionId) {
+        return getDrawableWeatherCondition(RES_TYPE_ICON, conditionId);
     }
 }

@@ -17,34 +17,62 @@ package com.example.android.sunshine.app;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends ActionBarActivity {
+import com.example.android.sunshine.app.data.WeatherContract;
+import com.example.android.sunshine.app.sync.SunshineSyncAdapter;
+
+public class MainActivity extends ActionBarActivity implements
+        ForecastFragment.Callbacks {
 
     private static final String FORECAST_FRAG_TAG = ForecastFragment.class.getSimpleName();
+    private static final String DETAIL_FRAG_TAG = DetailFragment.class.getSimpleName();
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private String mLocation;
+    private boolean mTwoPaneLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mTwoPaneLayout = findViewById(R.id.detail_pane) != null;
+        addForecastFragment(savedInstanceState, !mTwoPaneLayout);
+        SunshineSyncAdapter.initializeSyncAdapter(this);
+    }
+
+    private void addForecastFragment(Bundle savedInstanceState, boolean useTodaySpecialLayout) {
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new ForecastFragment(), FORECAST_FRAG_TAG)
-                    .commit();
+                                       .add(R.id.forecast_pane,
+                                            ForecastFragment.newInstance(useTodaySpecialLayout),
+                                            FORECAST_FRAG_TAG)
+                                       .commit();
         }
+    }
+
+    private void replaceDetailFragment(long date) {
+        getSupportFragmentManager().beginTransaction()
+                                   .replace(R.id.detail_pane,
+                                            DetailFragment.newInstance(date),
+                                            DETAIL_FRAG_TAG)
+                                   .commit();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        checkLocationChange();
+    }
+
+    private void checkLocationChange() {
         SharedPreferences sharedPrefs =
                 PreferenceManager.getDefaultSharedPreferences(this);
         String storedLocation = sharedPrefs.getString(
@@ -55,8 +83,14 @@ public class MainActivity extends ActionBarActivity {
         }
         mLocation = storedLocation;
         ForecastFragment forecastFragment = (ForecastFragment) getSupportFragmentManager()
-                        .findFragmentByTag(FORECAST_FRAG_TAG);
+                .findFragmentByTag(FORECAST_FRAG_TAG);
         forecastFragment.onLocationChanged();
+
+        DetailFragment detailFragment = ((DetailFragment) getSupportFragmentManager()
+                .findFragmentByTag(DETAIL_FRAG_TAG));
+        if (detailFragment != null) {
+            detailFragment.onLocationChanged();
+        }
     }
 
     @Override
@@ -78,29 +112,17 @@ public class MainActivity extends ActionBarActivity {
             startActivity(new Intent(this, SettingsActivity.class));
             return true;
         }
-
-        if (id == R.id.action_map) {
-            openPreferredLocationInMap();
-            return true;
-        }
         return super.onOptionsItemSelected(item);
     }
 
-    private void openPreferredLocationInMap() {
-        // Using the URI scheme for showing a location found on a map.  This super-handy
-        // intent can is detailed in the "Common Intents" page of Android's developer site:
-        // http://developer.android.com/guide/components/intents-common.html#Maps
-        Uri geoLocation = Uri.parse("geo:0,0?").buildUpon()
-                .appendQueryParameter("q", mLocation)
-                .build();
-
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(geoLocation);
-
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            startActivity(intent);
+    @Override
+    public void onForecastItemClick(long date) {
+        if (mTwoPaneLayout) {
+            replaceDetailFragment(date);
         } else {
-            Log.d(LOG_TAG, "Couldn't call " + mLocation + ", no receiving apps installed!");
+            Intent intent = new Intent(this, DetailActivity.class)
+                    .putExtra(DetailActivity.DATE_KEY, date);
+            startActivity(intent);
         }
     }
 }

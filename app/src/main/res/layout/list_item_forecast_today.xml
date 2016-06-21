@@ -1,49 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="horizontal"
+              android:padding="16dp"
+              android:background="@color/sunshine_blue">
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:padding="16dp">
+        android:gravity="center_vertical"
+        android:layout_marginLeft="44dp"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/txt_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Today, 24 Jun"
-            android:maxLines="1"/>
+            android:maxLines="1"
+            tools:text="Today, 24 Jun"
+            style="@style/TextBodyLarge"
+            android:textColor="@android:color/white"/>
 
         <TextView
             android:id="@+id/txt_max"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="21˚"
-            android:maxLength="5"/>
+            android:maxLength="5"
+            android:textSize="72sp"
+            android:textColor="@android:color/white"
+            android:fontFamily="sans-serif-light"
+            tools:text="21˚"/>
 
         <TextView
             android:id="@+id/txt_min"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="9˚"
-            android:maxLength="5"/>
+            android:maxLength="5"
+            android:textSize="36sp"
+            android:textColor="@android:color/white"
+            android:fontFamily="sans-serif-light"
+            android:text="9˚"/>
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/txt_weather_desc"
+    <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1"
-        android:text="Clear"
-        android:maxLines="1"
         android:gravity="center"
-        android:drawableTop="@drawable/ic_launcher"
-        android:padding="16dp"/>
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/img_weather"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/txt_weather_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:maxLines="1"
+            tools:text="Clear"
+            style="@style/TextBodyLarge"
+            android:textColor="@android:color/white"/>
+
+    </LinearLayout>
 
 </LinearLayout>
